@@ -196,7 +196,7 @@ def process_image(input_image_path, output_image_path, tile_size=64, character='
 
 # Example usage
 if __name__ == "__main__":
-    # # Example 1: Just build and test the lookup table
+    # # Example 1: build lookup table and test with a single tile
     # lookup = CharacterLookup(character='a', tile_size=64)
 
     # test_image = Image.new("L", size=(64, 64), color=255)  # white background
@@ -223,6 +223,5 @@ if __name__ == "__main__":
     # result = lookup.render_tile(match['rotation'], match['brightness'])
     # result.show()
 
-    # Example 2: Process a full image (uncomment when ready)
-    process_image("C:\\Users\\akash\Downloads\\Akash ID pic.jpg",
-                  'C:\\Users\\akash\Downloads\\output.png', tile_size=64, character='a')
+    process_image("C:\\Users\\akash\Downloads\\Akash ID Pic.jpg",
+                  'C:\\Users\\akash\Downloads\\output2.png', tile_size=64, character='a')
