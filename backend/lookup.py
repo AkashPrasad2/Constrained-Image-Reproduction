@@ -79,15 +79,16 @@ class CharacterLookup:
 
         avg_brightness = np.mean(input_tile)
 
-        # Convert input to float for comparison
-        input_tile_float = input_tile.astype(np.float32)
+        # Normalize for better comparison
+        normalized_input_tile = normalize_tile(input_tile)
 
         # Find best rotation by comparing pixel patterns
         best_rotation = None
         min_mse = float('inf')
 
         for rotation, mask in self.lookup.items():
-            mse = np.mean((input_tile_float - mask) ** 2)
+            normalized_mask = normalize_tile(mask)
+            mse = np.mean((normalized_input_tile - normalized_mask) ** 2)
 
             if mse < min_mse:
                 min_mse = mse
@@ -124,6 +125,12 @@ class CharacterLookup:
         return Image.fromarray(output, mode='L')
 
 
+def normalize_tile(tile):
+    tile = tile.astype(np.float32) / 255.0
+    tile -= tile.mean()
+    return tile
+
+
 def process_image(input_image_path, output_image_path, tile_size=64, character='a'):
     """
     Convert an image to character art using a single character.
@@ -137,6 +144,11 @@ def process_image(input_image_path, output_image_path, tile_size=64, character='
     # Load and convert input image to grayscale
     input_img = Image.open(input_image_path).convert('L')
     width, height = input_img.size
+
+    # Crop image so dimensions are a multiple of the tile size
+    new_width = (width // tile_size) * tile_size
+    new_height = (height // tile_size) * tile_size
+    input_img = input_img.crop((0, 0, new_width, new_height))
 
     # Calculate grid dimensions
     tiles_x = width // tile_size
@@ -184,21 +196,33 @@ def process_image(input_image_path, output_image_path, tile_size=64, character='
 
 # Example usage
 if __name__ == "__main__":
-    # Example 1: Just build and test the lookup table
-    lookup = CharacterLookup(character='a', tile_size=64)
+    # # Example 1: Just build and test the lookup table
+    # lookup = CharacterLookup(character='a', tile_size=64)
 
-    # Create a test tile (e.g., a diagonal gradient)
-    test_tile = np.tile(np.linspace(0, 255, 64), (64, 1)).astype(np.uint8)
+    # test_image = Image.new("L", size=(64, 64), color=255)  # white background
+    # draw = ImageDraw.Draw(test_image)
 
-    match = lookup.find_best_match(test_tile)
-    print(f"Test tile match:")
-    print(f"  Best rotation: {match['rotation']}°")
-    print(f"  Average brightness: {match['brightness']:.1f}")
-    print(f"  MSE: {match['mse']:.2f}")
+    # font = ImageFont.truetype("arial.ttf", 70)  # arial font
 
-    # Render and show the result
-    result = lookup.render_tile(match['rotation'], match['brightness'])
-    result.show()
+    # draw.text((16, -10), 'a', font=font, fill=100)
+
+    # test_image = test_image.rotate(20, fillcolor=255, expand=False)
+
+    # test_arr = np.array(test_image, dtype=np.float32)
+
+    # # Create a test tile (e.g., a diagonal gradient)
+    # test_tile = np.tile(np.linspace(0, 255, 64), (64, 1)).astype(np.uint8)
+
+    # match = lookup.find_best_match(test_arr)
+    # print(f"Test tile match:")
+    # print(f"  Best rotation: {match['rotation']}°")
+    # print(f"  Average brightness: {match['brightness']:.1f}")
+    # print(f"  MSE: {match['mse']:.2f}")
+
+    # # Render and show the result
+    # result = lookup.render_tile(match['rotation'], match['brightness'])
+    # result.show()
 
     # Example 2: Process a full image (uncomment when ready)
-    # process_image('input.jpg', 'output.png', tile_size=64, character='a')
+    process_image("C:\\Users\\akash\Downloads\\Akash ID pic.jpg",
+                  'C:\\Users\\akash\Downloads\\output.png', tile_size=64, character='a')
