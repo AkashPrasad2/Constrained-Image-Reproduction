@@ -25,54 +25,106 @@ function App() {
 
       const data = await res.json();
 
-      // Create data URL from base64 (so <img> can use it directly)
+      if (data.status === "error") {
+        throw new Error(data.message || "Processing failed");
+      }
+
+      // Create data URL from base64
       const src = `data:image/png;base64,${data.base64_image}`;
       setImageUrl(src);
     } catch (error) {
       console.error("Error:", error);
-      alert("Something went wrong :(");
+      alert(`Something went wrong: ${error}`);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-      <h1>Upload your image</h1>
+    <div style={{ padding: "2rem", fontFamily: "sans-serif", maxWidth: "1200px", margin: "0 auto" }}>
+      <h1>Character Art Generator</h1>
+      <p style={{ color: "#666", marginBottom: "2rem" }}>
+        Upload an image and convert it to art made entirely of the letter 'a'
+      </p>
 
-      <input
-        type="file"
-        accept="image/*"
-        onChange={(e) => {
-          if (e.target.files?.[0]) {
-            setFile(e.target.files[0]);
-            setImageUrl(null); // clear previous result when new file is selected
-          }
+      <div style={{ marginBottom: "2rem" }}>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            if (e.target.files?.[0]) {
+              setFile(e.target.files[0]);
+              setImageUrl(null);
+            }
+          }}
+          style={{
+            padding: "0.5rem",
+            border: "2px solid #ddd",
+            borderRadius: "4px",
+          }}
+        />
+      </div>
+
+      <button
+        onClick={handleUpload}
+        disabled={!file || loading}
+        style={{
+          padding: "0.75rem 1.5rem",
+          fontSize: "1rem",
+          backgroundColor: !file || loading ? "#ccc" : "#007bff",
+          color: "white",
+          border: "none",
+          borderRadius: "4px",
+          cursor: !file || loading ? "not-allowed" : "pointer",
+          fontWeight: "bold",
         }}
-      />
-
-      <br />
-      <br />
-
-      <button onClick={handleUpload} disabled={!file || loading}>
-        {loading ? "Processing..." : "Upload & Convert to Grayscale"}
+      >
+        {loading ? "Processing... (this may take a minute)" : "Generate Character Art"}
       </button>
 
-      {/* Show the result image when we have it */}
+      {loading && (
+        <div style={{ marginTop: "1rem", color: "#666" }}>
+          <p>⏳ Converting your image to character art...</p>
+          <p style={{ fontSize: "0.9rem" }}>
+            This process analyzes each tile and finds the best rotation of 'a' to match it.
+          </p>
+        </div>
+      )}
+
       {imageUrl && (
         <div style={{ marginTop: "2rem" }}>
-          <h3>Grayscale result:</h3>
+          <h3>Character Art Result:</h3>
+          <p style={{ color: "#666", fontSize: "0.9rem", marginBottom: "1rem" }}>
+            Your image recreated using only the letter 'a' at different rotations!
+          </p>
           <img
             src={imageUrl}
-            alt="Grayscale result"
+            alt="Character art result"
             style={{
               maxWidth: "100%",
-              maxHeight: "600px",
+              height: "auto",
               border: "1px solid #ddd",
               borderRadius: "8px",
               boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
             }}
           />
+          <div style={{ marginTop: "1rem" }}>
+            <a
+              href={imageUrl}
+              download="character-art.png"
+              style={{
+                display: "inline-block",
+                padding: "0.5rem 1rem",
+                backgroundColor: "#28a745",
+                color: "white",
+                textDecoration: "none",
+                borderRadius: "4px",
+                fontWeight: "bold",
+              }}
+            >
+              Download Image
+            </a>
+          </div>
         </div>
       )}
     </div>
