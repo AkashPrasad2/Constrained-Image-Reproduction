@@ -5,7 +5,7 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 import numpy as np
-from lookup import CharacterLookup
+from backend.character_lookup import CharacterLookup
 
 app = FastAPI()
 
