@@ -42,9 +42,9 @@ function App() {
 
   return (
     <div style={{ padding: "2rem", fontFamily: "sans-serif", maxWidth: "1200px", margin: "0 auto" }}>
-      <h1>Character Art Generator</h1>
+      <h1>🎨 Emoji Mosaic Generator</h1>
       <p style={{ color: "#666", marginBottom: "2rem" }}>
-        Upload an image and convert it to art made entirely of the letter 'a'
+        Upload an image and convert it to a mosaic made entirely of emojis
       </p>
 
       <div style={{ marginBottom: "2rem" }}>
@@ -79,27 +79,27 @@ function App() {
           fontWeight: "bold",
         }}
       >
-        {loading ? "Processing... (this may take a minute)" : "Generate Character Art"}
+        {loading ? "Processing... (this may take a minute)" : "Generate Emoji Mosaic"}
       </button>
 
       {loading && (
         <div style={{ marginTop: "1rem", color: "#666" }}>
-          <p>⏳ Converting your image to character art...</p>
+          <p>⏳ Converting your image to emoji mosaic...</p>
           <p style={{ fontSize: "0.9rem" }}>
-            This process analyzes each tile and finds the best rotation of 'a' to match it.
+            This process analyzes each tile and finds the best matching emoji based on color.
           </p>
         </div>
       )}
 
       {imageUrl && (
         <div style={{ marginTop: "2rem" }}>
-          <h3>Character Art Result:</h3>
+          <h3>Emoji Mosaic Result:</h3>
           <p style={{ color: "#666", fontSize: "0.9rem", marginBottom: "1rem" }}>
-            Your image recreated using only the letter 'a' at different rotations!
+            Your image recreated using emojis!
           </p>
           <img
             src={imageUrl}
-            alt="Character art result"
+            alt="Emoji mosaic result"
             style={{
               maxWidth: "100%",
               height: "auto",
@@ -111,7 +111,7 @@ function App() {
           <div style={{ marginTop: "1rem" }}>
             <a
               href={imageUrl}
-              download="character-art.png"
+              download="emoji-mosaic.png"
               style={{
                 display: "inline-block",
                 padding: "0.5rem 1rem",

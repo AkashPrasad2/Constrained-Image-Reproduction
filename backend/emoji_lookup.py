@@ -6,9 +6,10 @@ import os
 class EmojiLookup:
     """Lookup table for emojis"""
 
-    def __init__(self, _emojis_path="./emojis"):
-        self.lookup = {}  # emoji name: [r,b,g averages]
-        self.emojis_path = _emojis_path
+    def __init__(self, emojis_path="./emojis", tile_size=72):
+        self.lookup = {}  # emoji name: (r,b,g averages)
+        self.emojis_path = emojis_path
+        self.tile_size = tile_size
 
         self._build_lookup()
 
@@ -16,20 +17,20 @@ class EmojiLookup:
         for file in os.listdir(self.emojis_path):
             path = os.path.join(self.emojis_path, file)
             img = Image.open(path)
-            averages = self._compute_average_rgb(img)
+            averages = self.compute_average_rgb(img)
             self.lookup[file] = averages
 
-    def _compute_average_rgb(self, emoji: Image) -> tuple[float, float, float]:
+    def compute_average_rgb(self, image: Image) -> tuple[float, float, float]:
         """
-        Compute average rbg value of emoji to store in lookup table
+        Compute average rbg value of an image
 
         Args:
-            emoji: PIL image of emoji
+            image: PIL image of emoji
         Returns: 
             (r_avg, g_avg, b_avg) : tuple of np.float64
         """
-        emoji = emoji.convert("RGBA")
-        r, g, b, _ = emoji.split()  # split into 3 Images of type L
+        image = image.convert("RGB")
+        r, g, b = image.split()  # split into 3 Images of type L
         r_arr = np.array(r)
         g_arr = np.array(g)
         b_arr = np.array(b)
